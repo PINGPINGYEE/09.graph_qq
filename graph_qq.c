@@ -24,7 +24,7 @@ void insertVertex(GraphType* g, int v)
 {
     if (((g->n) + 1) > MAX)
     {
-        fprintf(stderr, "±×·¡ÇÁ: Á¤Á¡ÀÇ °³¼ö ÃÊ°ú");
+        fprintf(stderr, "ê·¸ë˜í”„: ì •ì ì˜ ê°œìˆ˜ ì´ˆê³¼");
         return;
     }
     g->n++;
@@ -34,7 +34,7 @@ void insertEdge(GraphType* g, int start, int end)
 {
     if (start >= g->n || end >= g->n)
     {
-        fprintf(stderr, "±×·¡ÇÁ: Á¤Á¡ ¹øÈ£ ¿À·ù");
+        fprintf(stderr, "ê·¸ë˜í”„: ì •ì  ë²ˆí˜¸ ì˜¤ë¥˜");
         return;
     }
     g->adjMat[start][end] = 1;
@@ -51,6 +51,7 @@ void printAdjMat(GraphType* g)
     }
 }
 
+// ì•„ë˜ë¶€í„° queueìƒì„±
 typedef struct {
     int data[MAX];
     int front, rear;
@@ -70,7 +71,7 @@ int isFull(QueueType* q) {
 
 void enqueue(QueueType* q, int item) {
     if (isFull(q)) {
-        fprintf(stderr, "Å¥°¡ Æ÷È­»óÅÂÀÔ´Ï´Ù.\n");
+        fprintf(stderr, "íê°€ í¬í™”ìƒíƒœì…ë‹ˆë‹¤.\n");
         return;
     }
     q->rear = (q->rear + 1) % MAX;
@@ -79,7 +80,7 @@ void enqueue(QueueType* q, int item) {
 
 int dequeue(QueueType* q) {
     if (isEmpty(q)) {
-        fprintf(stderr, "Å¥°¡ °ø¹é»óÅÂÀÔ´Ï´Ù.\n");
+        fprintf(stderr, "íê°€ ê³µë°±ìƒíƒœì…ë‹ˆë‹¤.\n");
         exit(1);
     }
     q->front = (q->front + 1) % MAX;
@@ -89,16 +90,16 @@ int dequeue(QueueType* q) {
 int visited[MAX];
 int parent[MAX];
 
-// dfs ½ºÅÃ »ç¿ëÇÏ¿© Á¦ÀÛ
+// dfs ìŠ¤íƒ ì‚¬ìš©í•˜ì—¬ ì œì‘
 void dfsMatStack(GraphType* g, int start, int end)
 {
     int w;
-    int* stack = (int*)malloc(g->n * sizeof(int)); // stack µ¿ÀûÇÒ´ç
+    int* stack = (int*)malloc(g->n * sizeof(int)); // stack ë™ì í• ë‹¹
     int top = -1;
 
-    stack[++top] = start; // stack¿¡ Ã¹ °ª push
+    stack[++top] = start; // stackì— ì²« ê°’ push
     visited[start] = 1;
-    parent[start] = -100; // ÀÌÈÄ Ãâ·ÂÀ» À§ÇÑ ÃÊ±â°ª
+    parent[start] = -100; // ì´í›„ ì¶œë ¥ì„ ìœ„í•œ ì´ˆê¸°ê°’
 
     while (top != -1) {
 
@@ -107,27 +108,27 @@ void dfsMatStack(GraphType* g, int start, int end)
         if (v == end) {
             int path[MAX];
             int pathIndex = 0;
-            while (v != -100) { // ÃÊ±â°ª°ú °°À»¶§±îÁö °æ·Î Ãâ·Â
+            while (v != -100) { // ì´ˆê¸°ê°’ê³¼ ê°™ì„ë•Œê¹Œì§€ ê²½ë¡œ ì¶œë ¥
                 path[pathIndex++] = v;
                 v = parent[v];
             }
-            printf("\nÃÖÁ¾°æ·Î\n");
+            printf("\nìµœì¢…ê²½ë¡œ\n");
             for (int i = pathIndex - 1; i >= 0; i--) {
                 printf("%d ", path[i]);
                 if (i > 0) {
                     printf("-> ");
                 }
             }
-            printf("\nÅ½»ö ¼º°ø : %d\n", end);
+            printf("\níƒìƒ‰ ì„±ê³µ : %d\n", end);
             break;
         }
 
         for (w = 0; w < g->n; w++) {
             if (g->adjMat[v][w] && !visited[w]) {
-                stack[++top] = w; // stack¿¡ push
+                stack[++top] = w; // stackì— push
                 visited[w] = 1;
                 parent[w] = v;
-                printf("Á¤Á¡ %d -> ", w);
+                printf("ì •ì  %d -> ", w);
                 visitCount++;
             }
         }
@@ -135,27 +136,27 @@ void dfsMatStack(GraphType* g, int start, int end)
     free(stack);
 }
 
-// queue¸¦ ÀÌ¿ëÇÑ bfs
+// queueë¥¼ ì´ìš©í•œ bfs
 void bfsMatQueue(GraphType* g, int start, int end) {
     int w;
     QueueType q;
     initQueue(&q);
 
-    enqueue(&q, start); // queue¿¡ ÃÊ±â°ª input
+    enqueue(&q, start); // queueì— ì´ˆê¸°ê°’ input
     visited[start] = 1;
-    parent[start] = -100; // ÀÌÈÄ Ãâ·ÂÀ» À§ÇÑ ±âÁØ°ª
+    parent[start] = -100; // ì´í›„ ì¶œë ¥ì„ ìœ„í•œ ê¸°ì¤€ê°’
 
     while (!isEmpty(&q)) {
-        int v = dequeue(&q); // v¸¦ dequeue°ªÀ¸·Î ¼³Á¤
-        //printf("Á¤Á¡ %d -> ", v);
+        int v = dequeue(&q); // vë¥¼ dequeueê°’ìœ¼ë¡œ ì„¤ì •
+        //printf("ì •ì  %d -> ", v);
         if (v == end) {
             int path[MAX];
             int pathIndex = 0;
-            while (v != -100) { // ±âÁØ°ªÀÌ ³ª¿À±â Àü±îÁö °æ·Î Ãâ·Â
+            while (v != -100) { // ê¸°ì¤€ê°’ì´ ë‚˜ì˜¤ê¸° ì „ê¹Œì§€ ê²½ë¡œ ì¶œë ¥
                 path[pathIndex++] = v;
                 v = parent[v];
             }
-            printf("\nÃÖÁ¾°æ·Î\n");
+            printf("\nìµœì¢…ê²½ë¡œ\n");
             
             for (int i = pathIndex - 1; i >= 0; i--) {
                 printf("%d ", path[i]);
@@ -163,23 +164,23 @@ void bfsMatQueue(GraphType* g, int start, int end) {
                     printf("-> ");
                 }
             }
-            printf("\nÅ½»ö ¼º°ø : %d\n", end);
+            printf("\níƒìƒ‰ ì„±ê³µ : %d\n", end);
             break;
         }
 
         for (w = 0; w < g->n; w++) {
-            if (g->adjMat[v][w] && !visited[w]) { // g°¡ ±×·¡ÇÁµ¿¾È, visit°¡ ¾Æ´Ò µ¿¾È Å½»ö
+            if (g->adjMat[v][w] && !visited[w]) { // gê°€ ê·¸ë˜í”„ë™ì•ˆ, visitê°€ ì•„ë‹ ë™ì•ˆ íƒìƒ‰
                 enqueue(&q, w); // enqueue
                 visited[w] = 1;
                 parent[w] = v;
-                printf("Á¤Á¡ %d -> ", w);
+                printf("ì •ì  %d -> ", w);
                 visitCount++;
             }
         }
     }
 }
 
-
+// main í•¨ìˆ˜
 int main() {
     GraphType* g;
     g = (GraphType*)malloc(sizeof(GraphType));
@@ -208,38 +209,38 @@ int main() {
     insertEdge(g, 8, 9);
     insertEdge(g, 8, 10);
 
-    printf("--¸Ş´º--\n");
-    printf("1. ±íÀÌ ¿ì¼± Å½»ö\n");
-    printf("2. ³ĞÀÌ ¿ì¼± Å½»ö\n");
-    printf("3. Á¾·á\n");
+    printf("--ë©”ë‰´--\n");
+    printf("1. ê¹Šì´ ìš°ì„  íƒìƒ‰\n");
+    printf("2. ë„“ì´ ìš°ì„  íƒìƒ‰\n");
+    printf("3. ì¢…ë£Œ\n");
     int num;
     int start, end;
     while (1) {
-        printf("\n¸Ş´º¸¦ ÀÔ·ÂÇÏ¼¼¿ä: ");
+        printf("\në©”ë‰´ë¥¼ ì…ë ¥í•˜ì„¸ìš”: ");
         scanf_s("%d", &num);
         if (num == 1) {
-            printf("\n\n½ÃÀÛ °ª°ú Å½»öÇÒ °ª ÀÔ·Â: ");
+            printf("\n\nì‹œì‘ ê°’ê³¼ íƒìƒ‰í•  ê°’ ì…ë ¥: ");
             scanf_s("%d %d", &start, &end);
-            printf("\n\nDFS ¹æ½ÄÀ¸·Î °æ·Î Å½»ö\n");
+            printf("\n\nDFS ë°©ì‹ìœ¼ë¡œ ê²½ë¡œ íƒìƒ‰\n");
             visitCount = 0;
             for (int i = 0; i < g->n; i++) {
                 visited[i] = 0;
                 parent[i] = -1;
             }
-            dfsMatStack(g, start, end);
-            printf("\n¹æ¹®ÇÑ ³ëµåÀÇ ÃÑ È½¼ö: %d\n", visitCount);
+            dfsMatStack(g, start, end); // dfs
+            printf("\në°©ë¬¸í•œ ë…¸ë“œì˜ ì´ íšŸìˆ˜: %d\n", visitCount);
         }
         else if (num == 2) {
-            printf("\n\n½ÃÀÛ °ª°ú Å½»öÇÒ °ª ÀÔ·Â: ");
+            printf("\n\nì‹œì‘ ê°’ê³¼ íƒìƒ‰í•  ê°’ ì…ë ¥: ");
             scanf_s("%d %d", &start, &end);
-            printf("\n\nBFS ¹æ½ÄÀ¸·Î °æ·Î Å½»ö\n");
+            printf("\n\nBFS ë°©ì‹ìœ¼ë¡œ ê²½ë¡œ íƒìƒ‰\n");
             visitCount = 0;
             for (int i = 0; i < g->n; i++) {
                 visited[i] = 0;
                 parent[i] = -1;
             }
-            bfsMatQueue(g, start, end);
-            printf("\n¹æ¹®ÇÑ ³ëµåÀÇ ÃÑ È½¼ö: %d\n", visitCount);
+            bfsMatQueue(g, start, end); // bfs
+            printf("\në°©ë¬¸í•œ ë…¸ë“œì˜ ì´ íšŸìˆ˜: %d\n", visitCount);
         }
         else if (num == 3) {
             break;
