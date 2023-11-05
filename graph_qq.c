@@ -99,7 +99,7 @@ void dfsMatStack(GraphType* g, int start, int end)
 
     stack[++top] = start; // stack에 첫 값 push
     visited[start] = 1;
-    parent[start] = -100; // 이후 출력을 위한 초기값
+    parent[start] = -100; // 이후 출력을 위한 초기값, parent는 경로가 겹치지 않게 도움
 
     while (top != -1) {
 
@@ -144,7 +144,7 @@ void bfsMatQueue(GraphType* g, int start, int end) {
 
     enqueue(&q, start); // queue에 초기값 input
     visited[start] = 1;
-    parent[start] = -100; // 이후 출력을 위한 기준값
+    parent[start] = -100; // 이후 출력을 위한 기준값, 경로가 겹치지 않게 도움
 
     while (!isEmpty(&q)) {
         int v = dequeue(&q); // v를 dequeue값으로 설정
